@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Froggy Slot</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#03130a;--g:#39ff14;--g2:#8dff4a;--gd:#052612;--card:#0a2f18;--mut:#86b794;--gold:#ffc62b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;color:#fff;font-family:'Nunito',system-ui,sans-serif;font-weight:700;padding-bottom:84px;min-height:100vh;background:radial-gradient(120% 70% at 50% -8%,#0f6a2c 0%,#05190d 55%,#020b06 100%) fixed}
+.s{width:1em;height:1em;vertical-align:-.14em}
+.top{display:flex;align-items:center;gap:10px;padding:10px 14px;position:sticky;top:0;background:#03130af0;backdrop-filter:blur(10px);z-index:5;border-bottom:1px solid #39ff1425}
+.av{width:38px;height:38px;border-radius:50%;border:2px solid var(--g);box-shadow:0 0 12px #39ff1488;object-fit:cover;background:var(--card)}
+.brand{font-weight:900;font-size:18px;line-height:1;color:var(--g);text-shadow:0 0 12px #39ff1488;letter-spacing:.5px}.brand span{color:#fff}
+.mut{color:var(--mut);font-size:12px;font-weight:700}
+.pill{display:flex;align-items:center;gap:6px;background:#0a2f18;border:1px solid #39ff1466;border-radius:20px;padding:6px 12px;box-shadow:0 0 14px #39ff1430;font-weight:900}
+.pill svg{width:18px;height:18px}
+main{padding:14px;max-width:560px;margin:auto}.page{display:none;animation:in .3s}.page.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+.card{background:linear-gradient(160deg,#0d3b20,#072514);border:1px solid #39ff1440;border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 8px 22px #0008,inset 0 0 24px #39ff1410;transition:transform .12s;position:relative}
+.card:active{transform:scale(.97)}
+h3{margin:0 0 8px;font-weight:900}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button.b{width:100%;background:linear-gradient(180deg,#8dff4a,#2fd44f);color:#052612;font:900 15px 'Nunito',system-ui;border:0;padding:11px 14px;border-radius:14px;box-shadow:0 0 16px #39ff1455,0 3px 0 #17802c;transition:transform .1s,box-shadow .1s}
+button.b:active{transform:translateY(2px) scale(.97);box-shadow:0 0 8px #39ff1455,0 1px 0 #17802c}button.b:disabled{opacity:.5}
+button.b.alt{background:linear-gradient(180deg,#134a28,#0a2f18);color:#fff;border:1px solid #39ff1466;box-shadow:0 0 12px #39ff1425}
+.hero{position:relative;aspect-ratio:1/1;border-radius:26px;overflow:hidden;border:1px solid #39ff1466;box-shadow:0 0 34px #39ff1440,0 12px 30px #000a;margin-bottom:12px;background:#04170c}
+.hero img{position:absolute;display:block;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.hero .l0,.hero .l3{inset:0;width:100%;height:100%}.hero .sp{will-change:transform}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.tile{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px;text-align:center}
+.tile svg,.gi{width:40px;height:40px;stroke:var(--g);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px #39ff14aa)}
+.scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;margin:0 -14px 12px;padding:0 14px 6px}.scroll .card{flex:none;width:150px;margin:0;text-align:center}
+.lbl{font-weight:900;font-size:16px;margin:4px 2px 8px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#03130af7;border-top:1px solid #39ff1440;padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(10px);z-index:6}
+nav div{flex:1;text-align:center;padding:9px 0 8px;font-size:11px;color:var(--mut);transition:color .2s}
+nav svg{display:block;margin:0 auto 3px;width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+nav .on{color:var(--g);text-shadow:0 0 10px var(--g)}nav .on svg{filter:drop-shadow(0 0 6px var(--g))}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #ffffff12;font-size:13px}
+.pos{color:#6dff7a}.neg{color:#ff7a7a}
+.chips{display:flex;gap:6px;margin-bottom:10px;overflow:auto}.chips button{background:#0a2f18;color:#fff;border:1px solid #39ff1455;border-radius:14px;padding:7px 14px;font:800 13px 'Nunito',system-ui}.chips .on{background:var(--g);color:#052612}
+#modal{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:20}#modal .card{width:86%;max-height:82vh;overflow:auto}
+#roll{position:fixed;inset:0;background:#02100afa;z-index:30;display:none;flex-direction:column;justify-content:center}
+.rs{overflow:hidden;position:relative;height:150px;width:100%;background:#031109;border-block:1px solid #39ff1466}
+.rl{position:absolute;left:50%;top:0;bottom:0;width:3px;margin-left:-1px;background:var(--g);box-shadow:0 0 16px var(--g);z-index:2}
+.rt{display:flex;height:100%;will-change:transform}
+.tl{flex:none;width:120px;margin:8px 8px 8px 0;border-radius:14px;background:#0a2f18;border:1px solid #39ff1450;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;text-align:center;padding:4px;gap:2px}
+.tl.rare{border-color:#4aa8ff}.tl.epic{border-color:#c084fc}.tl.legendary{border-color:var(--gold)}.tl.mythic{border-color:#ff7be5}
+.pi{width:62px;height:62px;object-fit:contain}.cv{width:104px;height:104px;display:block;margin:6px auto;object-fit:contain;animation:fl 3s infinite ease-in-out}
+.cc{width:100%;max-width:190px;display:block;margin:0 auto 8px;mix-blend-mode:screen;border-radius:14px}
+@keyframes fl{50%{transform:translateY(-6px)}}
+.pop{animation:pop .6s}@keyframes pop{0%{transform:scale(.2) rotate(-20deg)}70%{transform:scale(1.15)}}
+.ib{position:absolute;right:10px;top:8px;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--mut);color:var(--mut);font:900 12px/19px 'Nunito';text-align:center;z-index:2}
+.common{color:#9fb8a8}.rare{color:#6db6ff}.epic{color:#c99bff}.legendary{color:var(--gold)}.mythic{color:#ff7be5}
+.k-common{background:linear-gradient(160deg,#124a28,#072514)}.k-rare{background:linear-gradient(160deg,#0f4f73,#072514);border-color:#4aa8ff88}.k-epic{background:linear-gradient(160deg,#4a2a7a,#072514);border-color:#c084fc88}.k-legendary{background:linear-gradient(160deg,#7a5a10,#072514);border-color:#ffc62b99}.k-mythic{background:linear-gradient(160deg,#7a1f78,#072514);border-color:#ff7be5aa;box-shadow:0 0 22px #ff7be533}
+.big{font-size:44px;font-weight:900;text-align:center;color:var(--g);text-shadow:0 0 18px var(--g)}
+#arena{position:relative;height:300px;background:#031109;border-radius:16px;overflow:hidden;border:1px solid #39ff1466;touch-action:manipulation}
+.duck{position:absolute;width:54px;user-select:none}.duck svg{width:100%;display:block}
+.puff{position:absolute;width:50px;height:50px;border-radius:50%;background:radial-gradient(#fff,#8dff4a 40%,transparent 70%);animation:boom .35s forwards}
+@keyframes boom{from{transform:scale(.3);opacity:1}to{transform:scale(2.2);opacity:0}}
+#cr{position:relative;height:170px;background:#031109;border-radius:16px;border:1px solid #39ff1466;overflow:hidden;margin:8px 0}
+#rk{position:absolute;left:50%;bottom:8px;width:38px;margin-left:-19px;transition:transform .15s linear}
+#rk .fl{animation:fk .2s infinite alternate}@keyframes fk{to{transform:scaleY(1.5)}}
+#bm{position:absolute;left:50%;bottom:20px;width:90px;height:90px;margin-left:-45px;border-radius:50%;background:radial-gradient(#fff,#ffc62b 35%,#ff5a1f 60%,transparent 72%);display:none}
+#bm.on{display:block;animation:boom .7s forwards}
+.wheel{width:230px;height:230px;border-radius:50%;margin:6px auto 0;border:4px solid var(--g);box-shadow:0 0 24px #39ff1488;transition:transform 4s cubic-bezier(.1,.7,.1,1);position:relative}
+.ptr{width:0;height:0;margin:8px auto -12px;border:12px solid transparent;border-top:20px solid var(--gold);position:relative;z-index:2;filter:drop-shadow(0 0 6px var(--gold))}
+.stat{text-align:center}.stat b{display:block;font-size:22px;color:var(--g)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g);margin-right:8px}.dot.x{background:#ff5a5a;box-shadow:0 0 8px #ff5a5a}
+.tag{font-size:10px;background:#1d6b33;border-radius:6px;padding:1px 6px;margin-left:4px;font-weight:800}
+.bet input{width:100%;background:#031109;border:1px solid #39ff1466;border-radius:12px;color:#fff;font:900 18px 'Nunito',system-ui;padding:10px 12px;margin-bottom:6px}
+.bq{display:flex;gap:6px;margin-bottom:10px}.bq button{flex:1;background:#0a2f18;color:#fff;border:1px solid #39ff1455;border-radius:10px;padding:8px 0;font:800 12px 'Nunito',system-ui}
+#scene{position:relative;height:290px;border-radius:18px;overflow:hidden;border:1px solid #8b5cf680;background:radial-gradient(120% 90% at 50% 110%,#2a1260,#140a33 55%,#0a0620);box-shadow:0 0 26px #7c3aed55}
+.stars{position:absolute;inset:0;background-image:radial-gradient(1.5px 1.5px at 20px 30px,#fffc,transparent),radial-gradient(1px 1px at 90px 80px,#fff9,transparent),radial-gradient(1.5px 1.5px at 160px 20px,#fffc,transparent),radial-gradient(1px 1px at 240px 110px,#fff9,transparent),radial-gradient(1.5px 1.5px at 310px 50px,#fffc,transparent);background-size:340px 150px;animation:sd 5s linear infinite}
+@keyframes sd{to{background-position:-340px 150px}}
+.ttl{position:absolute;left:14px;top:10px;line-height:.92;font-weight:900;font-style:italic;transform:skew(-6deg);z-index:2}
+.ttl .p{display:block;font-size:34px;color:#9b6bff;text-shadow:0 0 16px #8b5cf6cc;-webkit-text-stroke:1px #3b1d8a}.ttl .w{display:block;font-size:34px;color:#fff;text-shadow:0 2px 0 #2a1260}
+#mlt{position:absolute;left:0;right:0;top:38%;text-align:center;font-size:52px;font-weight:900;z-index:4;text-shadow:0 0 22px #8b5cf6,0 3px 0 #1a0c42}#mlt.win{color:#6dff7a}#mlt.lose{color:#ff7a7a;font-size:36px}
+#pilot{position:absolute;left:0;bottom:0;width:104px;z-index:3;will-change:transform}#pilot img.fr{width:100%;display:block;transform:rotate(-12deg)}
+.flame{animation:fk .11s infinite alternate;transform-origin:100% 50%}@keyframes fk{to{transform:rotate(-28deg) scale(1.22,.82)}}
+.clouds{position:absolute;left:0;right:0;bottom:0;width:100%;height:54px;z-index:2}
+.lastrow{display:flex;gap:6px;overflow-x:auto;margin:10px 0}.lc{flex:none;font-weight:900;font-size:12px;padding:4px 9px;border-radius:10px;background:#0a2f18;border:1px solid #39ff1440}.lc.g{color:var(--gold);border-color:#ffc62b88}.lc.m{color:#6dff7a}.lc.r{color:#ff7a7a}
+</style></head><body>
+<div class="top"><img id="av" class="av" src="" alt=""><div><div class="brand">FROGGY <span>SLOT</span></div><div class="mut" id="un"></div></div>
+<div style="margin-left:auto" class="pill" id="balp"><span id="ic-st"></span><b id="bal">0</b></div><div class="pill" onclick="go('inv')" id="ic-bag"></div></div>
+<main>
+<section class="page on" id="p-home">
+ <div class="hero" id="hero"><img class="l0" src="/img/logo/bg.webp" alt="Froggy Slot"></div>
+ <div class="row2"><button class="b" onclick="topup()">Поповнити баланс</button><button class="b alt" onclick="go('inv')">Інвентар</button></div>
+ <div class="lbl">Ігри</div>
+ <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px" id="quick"></div>
+ <div class="lbl">Популярні кейси</div><div class="scroll" id="pop"></div>
+ <div class="grid"><div class="card stat"><span class="mut">Онлайн</span><b id="online">0</b></div><div class="card stat" onclick="go('cases')"><span class="mut">Усі кейси</span><b>6</b></div></div>
+ <div class="card"><b>Стрічка</b><div id="feed"></div><div class="mut" style="margin-top:8px;font-size:11px">Онлайн і стрічка подій — демонстраційні дані.</div></div>
+</section>
+<section class="page" id="p-games"><div class="grid" id="gt"></div><div id="game" style="margin-top:12px"></div></section>
+<section class="page" id="p-cases"><div class="mut" style="margin-bottom:8px">Віртуальні колекційні предмети · не є блокчейн-NFT і не є подарунками Telegram</div><div class="grid" id="cases"></div></section>
+<section class="page" id="p-history"><div class="chips" id="chips"></div><div id="hist"></div></section>
+<section class="page" id="p-inv"></section>
+<section class="page" id="p-profile"></section>
+</main>
+<nav id="nav"></nav>
+<div id="roll"></div>
+<div id="modal" onclick="this.style.display='none'"><div class="card" id="mbody" onclick="event.stopPropagation()"></div></div>
+<script>
+const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();try{tg?.setHeaderColor('#03130a');tg?.setBackgroundColor('#03130a')}catch(e){}
+const $=s=>document.querySelector(s);let ME;
+const ST='<svg class="s" viewBox="0 0 24 24"><path fill="#ffc62b" stroke="#a87400" stroke-width="1" d="M12 2l3 6.5 7 .9-5.1 4.9 1.3 7L12 17.8 5.8 21.3l1.3-7L2 9.4l7-.9z"/></svg>';
+const SV=p=>`<svg viewBox="0 0 24 24">${p}</svg>`;
+const IC={home:SV('<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>'),games:SV('<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10v5M4.5 12.5h5"/><circle cx="16" cy="11.5" r="1"/><circle cx="18.5" cy="14" r="1"/>'),cases:SV('<path d="M3 8l9-5 9 5v9l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v9"/>'),history:SV('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),profile:SV('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'),
+bag:SV('<path d="M6 8h12l1 13H5z"/><path d="M9 8V6a3 3 0 016 0v2"/>'),miner:SV('<path d="M5 20L14 11"/><path d="M8 5c6-2 12 2 12 9M8 5c1 5 5 9 12 9"/>'),crash:SV('<path d="M3 20l7-8 4 4 7-10"/><path d="M15 6h6v6"/>'),duck:SV('<circle cx="9" cy="8" r="4"/><path d="M13 8h6l-4 2"/><path d="M5 12c-2 6 4 9 9 8 4-1 5-5 3-8"/>'),spin:SV('<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/>')};
+$('#ic-st').innerHTML=ST;$('#ic-bag').innerHTML=IC.bag.replace('<svg','<svg style="width:20px;height:20px;stroke:#39ff14;fill:none;stroke-width:1.9;stroke-linecap:round"');
+const api=async(p,o={})=>{const r=await fetch('/api'+p,{method:o.body?'POST':(o.m||'GET'),headers:{'Content-Type':'application/json','X-Init-Data':tg?.initData||''},body:o.body?JSON.stringify(o.body):(o.m==='POST'?'{}':undefined)});const j=await r.json();if(!r.ok){toast(j.error);throw j}return j};
+const toast=t=>tg?.showAlert?tg.showAlert(t):alert(t);
+const setBal=b=>{$('#bal').textContent=b;ME.balance=b};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TABS=[['home','Головна'],['games','Ігри'],['cases','Кейси'],['history','Історія'],['profile','Профіль']];
+$('#nav').innerHTML=TABS.map(t=>`<div id="n-${t[0]}" onclick="go('${t[0]}')">${IC[t[0]]}${t[1]}</div>`).join('');
+function go(p){document.querySelectorAll('.page').forEach(e=>e.classList.remove('on'));$('#p-'+p).classList.add('on');
+ document.querySelectorAll('nav div').forEach(e=>e.classList.remove('on'));$('#n-'+p)?.classList.add('on');
+ if(p==='history')hist('all');if(p==='profile')profile();if(p==='inv')inv();scrollTo(0,0)}
+const GAMES=[['miner','Miner','своя ставка'],['crash','Crash','своя ставка'],['spin','Lucky Spin','своя ставка']];
+$('#quick').innerHTML=GAMES.map(g=>`<div class="card tile" style="margin:0" onclick="game('${g[0]}')">${IC[g[0]]}<span style="font-size:11px">${g[1]}</span></div>`).join('');
+$('#gt').innerHTML=GAMES.map(g=>`<div class="card tile" onclick="game('${g[0]}')">${IC[g[0]]}<b>${g[1]}</b><span class="mut">${g[2]}</span></div>`).join('');
+/* ---- Лого-анімація ---- */
+const HM={b1:[6.539,2.871,24.96,16.507],b2:[63.876,15.391,19.617,13.238],b3:[87.002,12.36,10.447,16.667],b4:[1.595,43.541,16.746,14.115],b6:[4.147,84.769,25.359,13.876],b7:[74.801,83.652,23.844,16.188],heart:[42.663,37.4,23.285,21.053]};
+(function(){const hero=$('#hero');
+ for(const k of Object.keys(HM)){const i=document.createElement('img');i.className='sp';i.dataset.k=k;i.src=`/img/logo/${k}.webp`;const m=HM[k];i.style.cssText=`left:${m[0]}%;top:${m[1]}%;width:${m[2]}%;height:${m[3]}%`;if(k==='heart')i.style.transformOrigin='50% 55%';hero.append(i)}
+ const t=document.createElement('img');t.className='l3';t.src='/img/logo/top.webp';t.alt='';hero.append(t);
+ if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ const S={};hero.querySelectorAll('.sp').forEach(e=>{if(e.dataset.k!=='heart')S[e.dataset.k]={e,x:0,y:0,r:0,vx:0,vy:0,vr:0,p:[0,1,2,3].map(()=>Math.random()*6.28),f:[.5+Math.random()*.5,.8+Math.random()*.5,1.3+Math.random()*.7]}});
+ const H=hero.querySelector('[data-k=heart]'),eo=u=>1-Math.pow(1-u,3),eio=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+ let last=performance.now();
+ (function frame(now){requestAnimationFrame(frame);const dt=Math.min(.033,(now-last)/1000);last=now;if(!$('#p-home').classList.contains('on'))return;
+  const t=now/1000,sc=hero.clientWidth/760;
+  for(const s of Object.values(S)){ // «повітря»: пружина + поривчастий вітер + опір, обертання від бічної швидкості
+   const wx=Math.sin(t*s.f[0]+s.p[0])+.6*Math.sin(t*s.f[2]+s.p[1]),wy=.8*Math.sin(t*s.f[1]+s.p[2])+.5*Math.sin(t*s.f[0]*1.7+s.p[3]);
+   s.vx+=(-6*s.x-1.8*s.vx+90*wx)*dt;s.vy+=(-6*s.y-1.8*s.vy+70*wy)*dt;s.vr+=(-14*s.r-2.5*s.vr+.55*s.vx)*dt;
+   s.x+=s.vx*dt;s.y+=s.vy*dt;s.r+=s.vr*dt;s.e.style.transform=`translate(${s.x*sc}px,${s.y*sc}px) rotate(${s.r}deg)`}
+  const p=(t%2.4)/2.4,pl=p<.22?eio(p/.22):p<.36?1:1-eo((p-.36)/.64);H.style.transform=`scale(${1-.13*pl})`})(last)})();
+/* ---- Кейси ---- */
+let CS=[];const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+const img=(n,c='pi')=>`<img src="/img/${n}.png" class="${c}" alt="">`;
+const tImg=o=>o.t==='stars'?img('star'):img(slug(o.name));
+const tTxt=o=>o.t==='stars'?`+${o.amount} ${ST}`:esc(o.name);
+const modal=h=>{$('#mbody').innerHTML=h;$('#modal').style.display='flex'};
+const fmt=w=>w<0.01?w.toFixed(13).replace(/0+$/,''):+w.toFixed(2);
+const rtp=c=>Math.round(c.outcomes.reduce((a,o)=>a+(o.t==='stars'?o.amount:o.price)*o.w,0)/c.price);
+const caseCard=(c,w)=>`<div class="card k-${c.rar[1]}" ${w?`style="${w}"`:''}><span onclick="info('${c.id}')" class="ib">i</span><img src="/img/${c.cover}.webp" class="cc" alt="${esc(c.name)}"><button class="b" onclick="openCase('${c.id}')">Відкрити · ${c.price} ${ST}</button></div>`;
+async function loadCases(){CS=await api('/cases');$('#cases').innerHTML=CS.map(c=>caseCard(c)).join('');
+ $('#pop').innerHTML=CS.filter(c=>['c350','c750','c2000'].includes(c.id)).map(c=>`<div class="card k-${c.rar[1]}" onclick="go('cases')"><img src="/img/${c.cover}.webp" class="cc" alt=""><b>${c.price} ${ST}</b></div>`).join('')}
+function info(id){const c=CS.find(x=>x.id===id);modal(`<h3>${esc(c.name)} · ${c.price} ${ST}</h3>`+c.outcomes.map(o=>`<div class="row"><span>${tImg(o).replace('class="pi"','class="pi" style="width:26px;height:26px;vertical-align:middle"')} ${tTxt(o)}${o.t==='item'?` <span class="mut">(продаж ${o.price} ${ST})</span>`:''}</span><b>${fmt(o.w)}%</b></div>`).join('')+`<div class="mut" style="margin-top:8px">Середнє повернення (з продажем предметів): ≈${rtp(c)}%. Предмети віртуальні, не є блокчейн-NFT.</div>`)}
+async function openCase(id){const c=CS.find(x=>x.id===id);let r;try{r=await api('/case/open',{body:{id}})}catch(e){return}
+ setBal(r.balance);const W=128,N=46,T=38;
+ const rp=()=>{let x=Math.random()*100;for(const o of c.outcomes){if((x-=o.w)<0)return o}return c.outcomes[0]};
+ const tiles=Array.from({length:N},rp);tiles[T]=r.out;
+ const o=$('#roll');o.style.display='flex';
+ o.innerHTML=`<div class="rs"><div class="rl"></div><div class="rt" id="rt">${tiles.map(t=>`<div class="tl ${t.rarity||''}">${tImg(t)}<div>${tTxt(t)}</div></div>`).join('')}</div></div><div id="rr" style="text-align:center;margin-top:24px;min-height:170px"></div>`;
+ const rt=$('#rt');rt.style.transform='translateX(0)';rt.getBoundingClientRect();
+ const off=-(T*W+60)+innerWidth/2+(Math.random()*60-30);
+ rt.style.transition='transform 6s cubic-bezier(.12,.6,.1,1)';rt.style.transform=`translateX(${off}px)`;
+ const x=r.out,close=`$('#roll').style.display='none'`;
+ setTimeout(()=>{$('#rr').innerHTML=`<div class="pop">${tImg(x).replace('class="pi"','class="cv"')}<h2 class="${x.rarity||''}" style="margin:4px 0 12px">${tTxt(x)}</h2></div>`+(x.t==='item'?`<div style="display:flex;gap:10px;padding:0 16px"><button class="b" onclick="sellItem(${r.id})">Продати · ${x.price} ${ST}</button><button class="b alt" onclick="${close}">В інвентар</button></div>`:`<div style="padding:0 16px"><button class="b" onclick="${close}">Забрати</button></div>`)},6200)}
+async function sellItem(id){try{const r=await api('/item/sell',{body:{id}});setBal(r.balance);$('#rr').innerHTML=`<h2 class="pos">Продано: +${r.price} ${ST}</h2><div style="padding:0 16px"><button class="b" onclick="$('#roll').style.display='none'">Ок</button></div>`}catch(e){}}
+async function inv(){const it=await api('/items');
+ $('#p-inv').innerHTML=`<h3>Інвентар (${it.length})</h3>`+(it.length?`<div class="grid">${it.map(i=>`<div class="card k-${i.rarity}" style="text-align:center">${img(slug(i.name),'cv')}<b class="${i.rarity}">${esc(i.name)}</b><div class="mut" style="margin:4px 0 8px">${i.rarity}</div><button class="b" onclick="sellInv(${i.id})">Продати · ${i.price} ${ST}</button></div>`).join('')}</div>`:'<div class="card mut">Інвентар порожній. Відкрийте кейс!</div>')}
+async function sellInv(id){try{const r=await api('/item/sell',{body:{id}});setBal(r.balance);inv()}catch(e){}}
+async function topup(){try{setBal((await api('/topup',{body:{}})).balance)}catch(e){}}
+async function hist(k){
+ $('#chips').innerHTML=[['all','Усі'],['game','Ігри'],['case','Кейси'],['reward','Нагороди']].map(c=>`<button class="${c[0]===k?'on':''}" onclick="hist('${c[0]}')">${c[1]}</button>`).join('');
+ const r=await api('/history?kind='+k);$('#hist').innerHTML=r.map(h=>`<div class="row"><div>${esc(h.title)}${h.item?`<br><span class="mut">${esc(h.item)}</span>`:''}<br><span class="mut">${new Date(h.ts).toLocaleString('uk')}</span></div><b class="${h.delta>=0?'pos':'neg'}">${h.delta>0?'+':''}${h.delta} ${ST}</b></div>`).join('')||'<div class="mut">Поки порожньо</div>'}
+async function profile(){ME=await api('/me');const it=await api('/items');
+ $('#p-profile').innerHTML=`<div class="card" style="text-align:center"><img class="av" style="width:84px;height:84px" src="${esc(ME.photo)}" onerror="this.style.visibility='hidden'"><h3 style="margin-top:8px">${esc(ME.name)}</h3><div class="mut">@${esc(ME.username)} · ID ${ME.id}</div></div>
+ <div class="grid" style="margin-bottom:12px"><div class="card stat" style="margin:0"><span class="mut">Баланс</span><b>${ME.balance}</b></div><div class="card stat" style="margin:0"><span class="mut">Предметів</span><b>${it.length}</b></div><div class="card stat" style="margin:0"><span class="mut">Кейсів</span><b>${ME.cases}</b></div><div class="card stat" style="margin:0"><span class="mut">Ігор</span><b>${ME.games}</b></div></div>
+ <button class="b" onclick="topup()" style="margin-bottom:8px">Поповнити баланс</button><button class="b alt" onclick="go('inv')" style="margin-bottom:8px">Інвентар</button><button class="b alt" onclick="go('history')" style="margin-bottom:8px">Історія активності</button><button class="b alt" onclick="tg?tg.openTelegramLink('https://t.me/'):0">Підтримка</button>`}
+/* ---- Ставки ---- */
+const betUI=(d=10)=>`<div class="bet"><input id="bet" type="number" inputmode="numeric" min="1" value="${d}"><div class="bq">${[['1/2','half'],['x2','dbl'],['10',10],['100',100],['1000',1000],['Max','max']].map(([t,v])=>`<button onclick="bq('${v}')">${t}</button>`).join('')}</div></div>`;
+const bq=v=>{const i=$('#bet');const b=Math.floor(+i.value)||1;i.value=v==='half'?Math.max(1,Math.floor(b/2)):v==='dbl'?b*2:v==='max'?Math.max(1,ME.balance):v};
+const getBet=()=>{const b=Math.floor(+$('#bet').value);if(!(b>=1)){toast('Введіть ставку від 1');return 0}if(b>ME.balance){toast('Недостатньо кредитів на балансі');return 0}return b};
+/* ---- Ігри ---- */
+function game(g){go('games');({miner,crash,spin})[g]();$('#game').scrollIntoView({behavior:'smooth'})}
+const G=h=>$('#game').innerHTML=`<div class="card">${h}</div>`;
+async function miner(){G(`<h3>Miner</h3><div id="mlog" style="height:190px;overflow:auto"></div>${betUI(10)}<button class="b" id="mb">Скинути кирку</button>`);
+ $('#mb').onclick=async()=>{const bet=getBet();if(!bet)return;$('#mb').disabled=true;$('#mlog').innerHTML='';try{const r=await api('/miner',{body:{bet}});setBal(r.balance-r.total);
+ for(const s of r.steps){$('#mlog').insertAdjacentHTML('afterbegin',`<div class="row pop"><span><span class="dot ${s.broken?'x':''}"></span>${s.broken?'Кирка зламалась об':'Зламано'}: ${s.block} (міцн. ${s.hp})</span><b class="pos">${s.reward?'+'+s.reward:''}</b></div>`);await new Promise(r=>setTimeout(r,350))}
+ setBal(r.balance);$('#mlog').insertAdjacentHTML('afterbegin',`<div class="row"><b>Підсумок: ${r.total} ${ST} зі ставки ${bet}</b></div>`)}catch(e){}$('#mb').disabled=false}}
+const JETPACK='<svg viewBox="0 0 40 62" style="position:absolute;left:-14px;top:42%;width:34px;z-index:-1;transform:rotate(-12deg)"><rect x="2" y="2" width="16" height="48" rx="7" fill="#f59e0b" stroke="#92400e" stroke-width="2"/><rect x="22" y="2" width="16" height="48" rx="7" fill="#fbbf24" stroke="#92400e" stroke-width="2"/><rect x="4" y="48" width="12" height="9" fill="#6b7280"/><rect x="24" y="48" width="12" height="9" fill="#6b7280"/></svg>';
+const FLAME='<svg class="flame" viewBox="0 0 90 44" style="position:absolute;left:-78px;top:58%;width:84px;z-index:-1;transform:rotate(-28deg)"><defs><linearGradient id="fg" x1="1" x2="0"><stop offset="0" stop-color="#fff3b0"/><stop offset=".35" stop-color="#ffb62b"/><stop offset=".75" stop-color="#ff4d1f"/><stop offset="1" stop-color="#c0141a" stop-opacity="0"/></linearGradient></defs><path d="M90 22C70 2 34 8 2 22c32 14 68 20 88 0z" fill="url(#fg)"/><path d="M88 22C70 12 48 14 24 22c24 8 46 10 64 0z" fill="#fff6c8" opacity=".85"/></svg>';
+const CLOUDS='<svg class="clouds" viewBox="0 0 400 60" preserveAspectRatio="none"><path d="M0 60V38c20-18 44-14 56 0 12-22 46-24 62-2 18-16 48-12 58 4 14-18 50-18 64 2 16-14 44-10 56 6 14-14 40-10 48 4V60z" fill="#2b1466"/><path d="M0 60V48c24-14 46-8 58 4 16-16 44-14 60 2 20-12 46-8 54 6 18-12 44-8 58 6 16-10 40-8 52 4 22-10 40-4 48 2V60z" fill="#1d0f4a"/></svg>';
+async function crash(){G(`<div id="scene"><div class="stars"></div><div class="ttl"><span class="p">FROGGY</span><span class="w">SLOT</span></div><div id="mlt">1.00x</div><div id="pilot">${JETPACK}${FLAME}<img class="fr" src="/img/pilot.webp" alt=""></div>${CLOUDS}</div><div class="lastrow" id="last"></div>${betUI(10)}<button class="b" id="cb">Зробити ставку</button>`);
+ const sc=$('#scene'),pl=$('#pilot'),mt=$('#mlt');let raf=0,poll=0,t0=0,K=.1,bet=0,run=false;
+ const loadLast=async()=>{try{const l=await api('/crash/last');$('#last').innerHTML=l.map(c=>`<span class="lc ${c>=10?'g':c>=2?'m':'r'}">${c.toFixed(2)}x</span>`).join('')}catch(e){}};loadLast();
+ const place=m=>{const W=sc.clientWidth,H=sc.clientHeight,p=Math.min(1,Math.log(Math.max(m,1))/Math.log(30));pl.style.transform=`translate(${8+p*(W-130)}px,${-(10+Math.pow(p,.8)*(H-170))}px)`};
+ place(1);
+ const away=()=>{pl.style.transition='transform .9s cubic-bezier(.5,0,1,.6)';pl.style.transform=`translate(${sc.clientWidth+160}px,${-(sc.clientHeight+160)}px)`;setTimeout(()=>{pl.style.transition='none';place(1);mt.className='';mt.textContent='1.00x';pl.getBoundingClientRect()},1700)};
+ const finish=()=>{run=false;cancelAnimationFrame(raf);clearInterval(poll);$('#cb').textContent='Зробити ставку';$('#cb').classList.remove('alt');loadLast()};
+ const frame=()=>{if(!run)return;const m=Math.exp(K*(Date.now()-t0)/1000);mt.textContent=m.toFixed(2)+'x';place(m);$('#cb').textContent=`Забрати ${Math.floor(bet*m)}`;raf=requestAnimationFrame(frame)};
+ $('#cb').onclick=async()=>{const b=$('#cb');
+  if(run){const m=Math.exp(K*(Date.now()-t0)/1000);try{const r=await api('/crash/cashout',{body:{}});setBal(r.balance);finish();
+   if(r.crashed){mt.className='lose';mt.textContent='Улетів '+r.at.toFixed(2)+'x';away()}else{mt.className='win';mt.innerHTML=`+${r.win} ${ST}`;setTimeout(away,900)}}catch(e){}return}
+  bet=getBet();if(!bet)return;
+  try{const s=await api('/crash/start',{body:{bet}});setBal(s.balance);K=s.k;t0=Date.now();run=true;mt.className='';b.classList.add('alt');frame();
+   poll=setInterval(async()=>{try{const st=await api('/crash/state');if(st.crashed&&run){finish();mt.className='lose';mt.textContent='Улетів '+st.at.toFixed(2)+'x';away()}}catch(e){}},250)}catch(e){}}}
+async function spin(){G(`<h3>Lucky Spin</h3><div class="ptr"></div><div class="wheel" id="wh"></div>${betUI(10)}<button class="b" id="sb">Крутити</button><div id="sh" class="mut" style="margin-top:8px;text-align:center"></div>`);
+ const cols=['#1a8f3a','#0a3d1c'];let rot=0;
+ const draw=s=>{$('#wh').style.background='conic-gradient('+s.map((v,i)=>`${cols[i%2]} ${i*360/s.length}deg ${(i+1)*360/s.length}deg`).join(',')+')';$('#wh').innerHTML=s.map((v,i)=>`<div style="position:absolute;left:50%;top:50%;transform:rotate(${(i+.5)*360/s.length}deg) translate(-50%,-96px);transform-origin:0 0;font-weight:900;width:34px;text-align:center;font-size:13px">${v?'x'+v:'0'}</div>`).join('')};
+ draw([0,.5,0,1,0,2,0,5,0,10]);
+ const h=async()=>{const r=await api('/spins');$('#sh').textContent='Історія: '+(r.map(x=>x.title.replace('Lucky Spin ','')).join(' · ')||'—')};h();
+ $('#sb').onclick=async()=>{const bet=getBet();if(!bet)return;$('#sb').disabled=true;try{const r=await api('/spin',{body:{bet}});const n=r.sectors.length;setBal(r.balance-r.win);rot+=360*5+(360-(r.idx+.5)*360/n)-(rot%360);$('#wh').style.transform=`rotate(${rot}deg)`;
+ setTimeout(()=>{setBal(r.balance);$('#sh').innerHTML=r.win?`<b class="pos">Виграш +${r.win} ${ST} (x${r.mult})</b>`:'Без виграшу';h();$('#sb').disabled=false},4100)}catch(e){$('#sb').disabled=false}}}
+/* ---- Онлайн і стрічка ---- */
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const onlineBase=()=>{const d=new Date(),h=d.getHours()+d.getMinutes()/60;return 29.5+12.5*Math.cos((h-21.5)/24*2*Math.PI)}; // вечір ≈42, глибока ніч ≈17
+let onl=Math.round(onlineBase());
+function tickOnline(){const tgt=onlineBase()+Math.sin(Date.now()/540000)*2.5,r=Math.random();onl+=r<.45?0:r<.78?(tgt>onl?1:-1):(Math.random()<.5?1:-1);onl=Math.max(16,Math.min(43,onl));$('#online').textContent=onl;setTimeout(tickOnline,2500+Math.random()*6000)}
+const NA=['alex','dima','vlad','max','nastya','kate','ivan','olya','sasha','tema','andriy','yulia','roman','bohdan','ostap','kira','nazar','lera','denys','artem','sofia','yura','oleh','mark','diana','vova','ira','pasha','zhenya','taras','misha','anya','kolya','vika','stas','danylo'];
+const NS=['_ua','_kv','_lviv','_07','_99','2003','2001','_off','_fx','_xx','_real','777','_k','_s','','_dev','1998','_odesa','_dnipro','2005','_pro'];
+const nick=()=>{let n=pick(NA)+pick(NS);if(n.length<5)n+='_'+(10+Math.floor(Math.random()*89));return n};
+let FE=[];
+const feedEv=ts=>{const c=pick(CS);let x=Math.random()*100,o=c.outcomes[0];for(const k of c.outcomes){if((x-=k.w)<0){o=k;break}}return{n:nick(),c:c.name,o:o.t==='stars'?`+${o.amount} ${ST}`:esc(o.name),img:o.t==='stars'?'star':slug(o.name),ts}};
+const ago=t=>{const s=Math.floor((Date.now()-t)/1000);return s<10?'щойно':s<60?s+' с':Math.floor(s/60)+' хв'};
+function feedRender(){$('#feed').innerHTML=FE.map(e=>`<div class="row"><span style="display:flex;align-items:center;gap:8px"><img src="/img/${e.img}.png" style="width:28px;height:28px;object-fit:contain" alt=""><span>@${e.n}<br><span class="mut">${esc(e.c)} · ${e.o}</span></span></span><span class="mut">${ago(e.ts)}</span></div>`).join('')}
+function feedInit(){if(!CS.length)return;FE=[40,95,170,260,400].map(s=>feedEv(Date.now()-s*1000));feedRender();(function add(){FE.unshift(feedEv(Date.now()));FE=FE.slice(0,5);feedRender();setTimeout(add,4000+Math.random()*9000)})();setInterval(feedRender,10000)}
+(async()=>{try{ME=await api('/me')}catch(e){document.body.innerHTML='<p style="padding:20px">Відкрийте застосунок через Telegram-бота (або запустіть сервер з DEV=1).</p>';return}
+ await loadCases();$('#bal').textContent=ME.balance;$('#av').src=ME.photo||'';$('#un').textContent='@'+ME.username;go('home');
+ tickOnline();feedInit()})();
+</script></body></html>
